@@ -3,3 +3,6 @@ class PointNode(object):
         self.x = x
         self.y = y
         self.id = id
+
+    def getCoord(self):
+        return [self.x,self.y]
