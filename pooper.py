@@ -1,6 +1,8 @@
 import Point,Building
 import re
+import json
 import collections
+import copy
 class data():
     def __init__(self):
         self.points = collections.defaultdict()
@@ -19,6 +21,7 @@ class data():
         return res
 
     def castBuild(self,start,end,lines):
+        typeNo = 2
         ID,type, height, pID= None, None, None, []
         bre = lines[start].split(' ')
         for item in bre:
@@ -34,9 +37,12 @@ class data():
                 pID.append(re.sub("[^0-9]", "", lines[i]))
             else:
                 curType = self.getBuildType(lines[i])
-                if curType:type = curType
+                if curType:
+                    type = curType
+                    if "build" in type:typeNo = 0
+                    elif "highway" in type: typeNo = 1
         if not flag: type = "NullType"
-        return [ID,type,height,pID]
+        return [ID,type,height,pID,typeNo]
 
 
 
@@ -54,8 +60,7 @@ class data():
                 if "</way>" in line:
                     if way:
                         buildInfo = self.castBuild(way,lineNumber+1,lines)
-                        self.buildings[buildInfo[0]] = Building.BuildingNode(buildInfo[0],buildInfo[1],buildInfo[2],buildInfo[3])
-                        print buildInfo
+                        self.buildings[buildInfo[0]] = Building.BuildingNode(buildInfo[0],buildInfo[1],buildInfo[2],buildInfo[3],buildInfo[4])
                     way = lineNumber + 1
 
 
@@ -63,10 +68,28 @@ class data():
     def freezePoints(self,mult):
         zeroX = None
         zeroY = None
-
         for key,val in self.points.items():
             if not zeroX:zeroX,zeroY = val.x,val.y
             val.mulCoord(zeroX,zeroY,mult)
+
+    def toJson(self,pName,bName):
+        points = copy.deepcopy(self.points)
+        buildings = copy.deepcopy(self.buildings)
+        for key,val in points.items():
+            points[key] = [val.x,val.y]
+        with open(pName+'.json', 'w') as outfile:
+            json.dump(points, outfile)
+        for key,val in buildings.items():
+            buildings[key] = [val.pID,val.height,val.type,val.typeNo]
+        with open(bName+'.json', 'w') as outfile:
+            json.dump(buildings, outfile)
+
+    def loadJson(self,file):
+        with open(file+'.json') as json_data:
+            res = json.load(json_data)
+            json_data.close()
+        return res
+
 
 
     def getBuildType(self,line):
@@ -172,12 +195,14 @@ def ps2tuple(points,pIDs):
             tPoint.append((points[pID].x, 0, points[pID].y))
     return tPoint
 
-file = "t.osm"
+file = "smallData.osm"
 a = data()
 a.castData(file)
 
-a.freezePoints(100000)
+##a.freezePoints(100000)
+a.toJson("points","buildings")
+
+print a.loadJson("points")
 
 for key,val in a.buildings.items():
     tPoint = ps2tuple(a.points,val.pID)
-    print tPoint
