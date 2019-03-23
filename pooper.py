@@ -3,9 +3,6 @@ import re
 import json
 import collections
 import copy
-import convertor
-import random
-
 class data():
     def __init__(self):
         self.points = collections.defaultdict()
@@ -76,7 +73,6 @@ class data():
             val.mulCoord(zeroX,zeroY,mult)
 
     def toJson(self,pName,bName):
-        print "hi"
         points = copy.deepcopy(self.points)
         buildings = copy.deepcopy(self.buildings)
         for key,val in points.items():
@@ -89,7 +85,6 @@ class data():
             json.dump(buildings, outfile)
 
     def loadJson(self,file):
-
         with open(file+'.json') as json_data:
             res = json.load(json_data)
             json_data.close()
@@ -200,13 +195,14 @@ def ps2tuple(points,pIDs):
             tPoint.append((points[pID].x, 0, points[pID].y))
     return tPoint
 
-file = "bigData.osm"
+file = "smallData.osm"
 a = data()
 a.castData(file)
-a.freezePoints(100000)
-a.toJson("points","geos")
 
+##a.freezePoints(100000)
+a.toJson("points","buildings")
 
+print a.loadJson("points")
 
 for key,val in a.buildings.items():
     tPoint = ps2tuple(a.points,val.pID)
