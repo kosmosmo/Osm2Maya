@@ -1,7 +1,7 @@
 from math import sin, cos, sqrt, atan2, radians
 import math
 class Convert(object):
-    def __int__(self,p1,p2):
+    def __init__(self,p1,p2):
         self.p1 = p1
         self.p2 = p2
 
@@ -25,8 +25,8 @@ class Convert(object):
         return self.latDis()*1000/self.pointDis()
 
 
-p1 = [40.7480438,-73.8003958]
-p2 = [40.7482377,-73.8002832]
+p1 = [40.7088406,-74.0160348]
+p2 = [40.7040245,-73.9948691]
 a = Convert(p1,p2)
-print a.getMul()
+print a.latDis()
 
