@@ -3,7 +3,7 @@ import maya.cmds as cmds
 import pooper
 import collections
 from PySide2 import QtCore, QtGui, QtWidgets
-import output
+import MainUI_OSM
 class mayaSucks(QtCore.QObject):
     valueUpdated = QtCore.Signal(int)
     def progressBar(self,length, portion):
