@@ -1,4 +1,3 @@
-import collections
-dic = collections.defaultdict(list)
-dic["height"] = ['2']
-print dic.get("height")
+mystring = "http://www.shabi.com/hi/a"
+encoded = encode(mystring,"p")
+print(encoded)
